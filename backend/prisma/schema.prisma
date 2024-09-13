@@ -16,7 +16,7 @@ datasource db {
 model Business {
   id String @id @default(uuid())
   title String
-  slug String
+  slug String @unique()
   description String
   image String
   contactPerson String
