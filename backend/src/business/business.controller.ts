@@ -1,5 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  FileTypeValidator,
+  Get,
+  Param,
+  ParseFilePipe,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { BusinessService } from './business.service';
+import { AddBusinessDto } from './dto/add-business.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('business')
 export class BusinessController {
@@ -13,5 +25,19 @@ export class BusinessController {
   @Get('/:businessSlug')
   getSingle(@Param('businessSlug') businessSlug: string) {
     return this.businessService.getSingle(businessSlug);
+  }
+
+  @Post()
+  @UseInterceptors(FileInterceptor('image'))
+  addBusiness(
+    @Body() addBusinessDto: AddBusinessDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' })],
+      }),
+    )
+    image: Express.Multer.File,
+  ) {
+    return this.businessService.addBusiness(addBusinessDto, image);
   }
 }
