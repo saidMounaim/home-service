@@ -1,0 +1,17 @@
+services:
+  postgress:
+    image: postgres
+    container_name: postgresql_hs
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sm
+      - POSTGRES_PASSWORD=sm_123
+      - POSTGRES_DB=homeservice
+    networks:
+      - hs
+
+networks:
+  hs:
+    name: hs
