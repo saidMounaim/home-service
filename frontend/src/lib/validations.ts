@@ -28,7 +28,17 @@ export const CreateBusinessSchema = z.object({
   category: z.enum(
     ["Cleaning", "Repair", "Painting", "Shifting", "Plumbing", "Electric"],
     {
-      required_error: "Please select a category.",
+      message: "Please select a category.",
     }
   ),
+});
+
+export const AppointmentFormSchema = z.object({
+  date: z.date({
+    message: "Date is required",
+  }),
+  timeSlot: z.string().min(1, "Time slot is required"),
+  note: z.string().min(2, {
+    message: "Note must be at least 2 characters.",
+  }),
 });

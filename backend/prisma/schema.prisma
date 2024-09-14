@@ -14,17 +14,19 @@ datasource db {
 }
 
 model Business {
-  id String @id @default(uuid())
-  title String
-  slug String @unique()
-  description String
-  image String
+  id            String   @id @default(uuid())
+  title         String
+  slug          String   @unique()
+  description   String
+  image         String
   contactPerson String
-  email String
-  category Category
+  email         String
+  category      Category
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  appointments Appointment[]
 }
 
 enum Category {
@@ -34,4 +36,14 @@ enum Category {
   Shifting
   Plumbing
   Electric
+}
+
+model Appointment {
+  id       String   @id @default(uuid())
+  date     DateTime
+  timeSlot String
+  note     String?
+
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  businessId String
 }

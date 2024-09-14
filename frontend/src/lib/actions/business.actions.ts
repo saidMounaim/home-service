@@ -1,5 +1,8 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { appointmentDataProps } from "../types";
+
 const apiUrl = process.env.API_URL;
 
 export async function fetchBusinessAction() {
@@ -77,6 +80,36 @@ export async function createBusinessAction(businessData: FormData) {
       };
     }
     return response.json();
+  } catch (error: any) {
+    return {
+      errorMessage: error.message || "Something went wrong, please try again",
+    };
+  }
+}
+
+export async function makeAppointmentAction(
+  appointmentData: appointmentDataProps,
+  pathname: string
+) {
+  try {
+    const response = await fetch(
+      `${process.env.API_URL}/business/appointment/create`,
+      {
+        method: "POST",
+        body: JSON.stringify(appointmentData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      return {
+        errorMessage: errorResponse.message || "Unable to make an appointment",
+      };
+    }
+    return response.json();
+    revalidatePath(pathname);
   } catch (error: any) {
     return {
       errorMessage: error.message || "Something went wrong, please try again",

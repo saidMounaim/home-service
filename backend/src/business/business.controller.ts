@@ -13,6 +13,7 @@ import { BusinessService } from './business.service';
 import { AddBusinessDto } from './dto/add-business.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Category } from '@prisma/client';
+import { MakeAppointmentDto } from './dto/make-appointment.dto';
 
 @Controller('business')
 export class BusinessController {
@@ -45,5 +46,10 @@ export class BusinessController {
     image: Express.Multer.File,
   ) {
     return this.businessService.addBusiness(addBusinessDto, image);
+  }
+
+  @Post('/appointment/create')
+  makeAppointment(@Body() makeAppointmentDto: MakeAppointmentDto) {
+    return this.businessService.makeAppointment(makeAppointmentDto);
   }
 }

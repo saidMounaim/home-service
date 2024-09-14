@@ -7,6 +7,7 @@ import {
   HouseIcon,
 } from "lucide-react";
 import Link from "next/link";
+import React from "react";
 
 const categories = [
   { name: "Cleaning", icon: <HouseIcon />, href: "/category/Cleaning" },

@@ -4,6 +4,7 @@ import { AddBusinessDto } from './dto/add-business.dto';
 import slugify from 'slugify';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { Category } from '@prisma/client';
+import { MakeAppointmentDto } from './dto/make-appointment.dto';
 
 @Injectable()
 export class BusinessService {
@@ -89,6 +90,31 @@ export class BusinessService {
       await this.prisma.business.create({ data: newBusiness });
 
       return newBusiness;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async makeAppointment(makeAppointmentDto: MakeAppointmentDto) {
+    const { date, timeSlot, businessId } = makeAppointmentDto;
+    try {
+      const appointment = await this.prisma.appointment.findFirst({
+        where: {
+          businessId,
+          date: new Date(date),
+          timeSlot,
+        },
+      });
+
+      if (appointment) {
+        throw new BadRequestException('Appointment already booked');
+      }
+
+      const newAppointment = { date: new Date(date), timeSlot, businessId };
+
+      await this.prisma.appointment.create({ data: newAppointment });
+
+      return newAppointment;
     } catch (error) {
       throw new BadRequestException(error);
     }

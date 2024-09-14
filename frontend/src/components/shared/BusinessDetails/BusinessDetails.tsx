@@ -3,11 +3,11 @@
 import { getSingleBusinessAction } from "@/lib/actions/business.actions";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./Loading";
-import Error from "./Error";
 import { notFound } from "next/navigation";
 import { Contact2Icon, MailIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import AppointmentForm from "../Forms/AppointmentForm";
 
 export default function BusinessDetails({
   businessSlug,
@@ -56,17 +56,12 @@ export default function BusinessDetails({
               <MailIcon className="w-5 h-5 text-muted-foreground" />
               <span className="text-muted-foreground">{business.email}</span>
             </div>
-            <Button
-              size="lg"
-              className="bg-orange-500 text-white hover:bg-orange-600"
-            >
-              Book Now
-            </Button>
           </div>
           <div className="flex flex-col gap-3">
             <h2 className="text-2xl medium">About the Service</h2>
             <p className="text-md">{business.description}</p>
           </div>
+          <AppointmentForm businessId={business.id} />
         </div>
       </div>
     </>

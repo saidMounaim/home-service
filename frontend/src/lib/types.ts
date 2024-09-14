@@ -10,3 +10,10 @@ export interface BusinessProps {
   category: string;
   createdAt: Date;
 }
+
+export interface appointmentDataProps {
+  date: Date;
+  timeSlot: string;
+  note?: string;
+  businessId: string;
+}
