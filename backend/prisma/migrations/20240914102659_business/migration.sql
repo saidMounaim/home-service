@@ -16,3 +16,6 @@ CREATE TABLE "Business" (
 
     CONSTRAINT "Business_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Business_slug_key" ON "Business"("slug");
