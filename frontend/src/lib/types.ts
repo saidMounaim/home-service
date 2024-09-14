@@ -1,6 +1,7 @@
 export interface BusinessProps {
   id: string;
   title: string;
+  slug: string;
   description: string;
   image: string;
   fullName: string;

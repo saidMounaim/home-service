@@ -1,6 +1,7 @@
 import { BusinessProps } from "@/lib/types";
 import { Button } from "../../ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function BusinessCard({
   business,
@@ -29,8 +30,9 @@ export default function BusinessCard({
           <Button
             size="sm"
             className="w-full bg-orange-500 text-white hover:bg-orange-600"
+            asChild
           >
-            Book Now
+            <Link href={`/business/${business.slug}`}>Book Now</Link>
           </Button>
         </div>
       </div>
