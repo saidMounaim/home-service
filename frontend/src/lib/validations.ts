@@ -38,7 +38,5 @@ export const AppointmentFormSchema = z.object({
     message: "Date is required",
   }),
   timeSlot: z.string().min(1, "Time slot is required"),
-  note: z.string().min(2, {
-    message: "Note must be at least 2 characters.",
-  }),
+  note: z.string().optional(),
 });

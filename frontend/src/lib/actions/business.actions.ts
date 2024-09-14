@@ -108,8 +108,37 @@ export async function makeAppointmentAction(
         errorMessage: errorResponse.message || "Unable to make an appointment",
       };
     }
-    return response.json();
     revalidatePath(pathname);
+  } catch (error: any) {
+    return {
+      errorMessage: error.message || "Something went wrong, please try again",
+    };
+  }
+}
+
+export async function fetchUnavailableTimeSlotsAction(
+  businessId: string,
+  date: Date | undefined
+) {
+  try {
+    const response = await fetch(
+      `${process.env.API_URL}/business/unavailable-time-slots`,
+      {
+        method: "POST",
+        body: JSON.stringify({ businessId, date }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      return {
+        errorMessage:
+          errorResponse.message || "Unable to fetch unavailable time slots",
+      };
+    }
+    return response.json();
   } catch (error: any) {
     return {
       errorMessage: error.message || "Something went wrong, please try again",

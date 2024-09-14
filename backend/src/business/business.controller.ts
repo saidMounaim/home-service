@@ -52,4 +52,16 @@ export class BusinessController {
   makeAppointment(@Body() makeAppointmentDto: MakeAppointmentDto) {
     return this.businessService.makeAppointment(makeAppointmentDto);
   }
+
+  @Post('/unavailable-time-slots')
+  async getUnavailableTimeSlots(
+    @Body() body: { businessId: string; date: Date },
+  ) {
+    const { businessId, date } = body;
+    const unavailableSlots = await this.businessService.getUnavailableTimeSlots(
+      businessId,
+      new Date(date),
+    );
+    return unavailableSlots.map((slot) => slot.timeSlot);
+  }
 }

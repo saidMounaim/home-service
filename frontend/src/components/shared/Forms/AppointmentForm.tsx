@@ -37,10 +37,14 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AppointmentFormSchema } from "@/lib/validations";
-import { makeAppointmentAction } from "@/lib/actions/business.actions";
+import {
+  fetchUnavailableTimeSlotsAction,
+  makeAppointmentAction,
+} from "@/lib/actions/business.actions";
 import { useToast } from "@/hooks/use-toast";
 import { usePathname } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function AppointmentForm({
   businessId,
@@ -49,6 +53,7 @@ export default function AppointmentForm({
 }) {
   const { toast } = useToast();
   const pathname = usePathname();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const form = useForm<z.infer<typeof AppointmentFormSchema>>({
     resolver: zodResolver(AppointmentFormSchema),
@@ -57,6 +62,16 @@ export default function AppointmentForm({
       timeSlot: "",
       note: "",
     },
+  });
+
+  const {
+    data: unavailableSlots,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["UnavailableTimeSlots", businessId, selectedDate],
+    queryFn: () => fetchUnavailableTimeSlotsAction(businessId, selectedDate),
+    enabled: !!selectedDate,
   });
 
   async function onSubmit(values: z.infer<typeof AppointmentFormSchema>) {
@@ -68,7 +83,6 @@ export default function AppointmentForm({
     try {
       setTimeout(async () => {
         const response = await makeAppointmentAction(appointmentData, pathname);
-        console.log(response);
         if (response?.errorMessage) {
           toast({
             className: "bg-red-500 text-white text-md font-medium",
@@ -89,6 +103,15 @@ export default function AppointmentForm({
       });
     }
   }
+
+  const allTimeSlots = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+  ];
 
   return (
     <>
@@ -129,7 +152,10 @@ export default function AppointmentForm({
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            setSelectedDate(date || undefined);
+                            field.onChange(date);
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -154,12 +180,17 @@ export default function AppointmentForm({
                           <SelectValue placeholder="Select a time slot" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="9:00 AM">9:00 AM</SelectItem>
-                          <SelectItem value="10:00 AM">10:00 AM</SelectItem>
-                          <SelectItem value="11:00 AM">11:00 AM</SelectItem>
-                          <SelectItem value="1:00 PM">1:00 PM</SelectItem>
-                          <SelectItem value="2:00 PM">2:00 PM</SelectItem>
-                          <SelectItem value="3:00 PM">3:00 PM</SelectItem>
+                          {isLoading && <div>Loading...</div>}
+                          {error && <div>Error to fetch time slots</div>}
+                          {allTimeSlots.map((timeSlot) => (
+                            <SelectItem
+                              key={timeSlot}
+                              value={timeSlot}
+                              disabled={unavailableSlots?.includes(timeSlot)}
+                            >
+                              {timeSlot}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormControl>

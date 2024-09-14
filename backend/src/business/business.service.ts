@@ -119,4 +119,27 @@ export class BusinessService {
       throw new BadRequestException(error);
     }
   }
+
+  async getUnavailableTimeSlots(businessId: string, date: Date) {
+    try {
+      const business = await this.prisma.business.findUnique({
+        where: { id: businessId },
+      });
+      if (!business) {
+        throw new BadRequestException('Business not found');
+      }
+
+      return this.prisma.appointment.findMany({
+        where: {
+          businessId,
+          date: new Date(date),
+        },
+        select: {
+          timeSlot: true,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }
