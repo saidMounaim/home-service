@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AddBusinessDto } from './dto/add-business.dto';
 import slugify from 'slugify';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Category } from '@prisma/client';
 
 @Injectable()
 export class BusinessService {
@@ -14,6 +15,21 @@ export class BusinessService {
   async getAll() {
     try {
       const business = await this.prisma.business.findMany({
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return business;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getByCategory(businessCategory: Category) {
+    try {
+      const business = await this.prisma.business.findMany({
+        where: {
+          category: businessCategory,
+        },
         orderBy: { createdAt: 'desc' },
       });
 

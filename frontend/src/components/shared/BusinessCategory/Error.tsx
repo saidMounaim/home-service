@@ -8,7 +8,7 @@ export default function Error() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
-          Unable to fetch single business, please try again
+          Unable to fetch business by category, please try again
         </AlertDescription>
       </Alert>
     </div>

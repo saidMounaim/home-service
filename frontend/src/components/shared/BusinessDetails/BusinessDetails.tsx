@@ -25,9 +25,7 @@ export default function BusinessDetails({
 
   if (isLoading) return <Loading />;
 
-  if (error) return <Error />;
-
-  if (!business) notFound();
+  if (error || !business) notFound();
 
   return (
     <>

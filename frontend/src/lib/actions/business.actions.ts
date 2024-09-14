@@ -41,6 +41,26 @@ export async function getSingleBusinessAction(slug: string) {
   }
 }
 
+export async function getBusinessByCategoryAction(category: string) {
+  if (!apiUrl) {
+    throw new Error("API_URL is not defined in environment variables");
+  }
+  try {
+    const response = await fetch(`${apiUrl}/business/category/${category}`);
+
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      throw new Error(
+        errorResponse.message || "Unable to fetch business by category data"
+      );
+    }
+
+    return response.json();
+  } catch (error: any) {
+    throw new Error(error.message || "Something went wrong, please try again");
+  }
+}
+
 export async function createBusinessAction(businessData: FormData) {
   if (!apiUrl) {
     return { errorMessage: "API_URL is not defined in environment variables" };

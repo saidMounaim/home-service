@@ -12,6 +12,7 @@ import {
 import { BusinessService } from './business.service';
 import { AddBusinessDto } from './dto/add-business.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Category } from '@prisma/client';
 
 @Controller('business')
 export class BusinessController {
@@ -20,6 +21,11 @@ export class BusinessController {
   @Get()
   getAll() {
     return this.businessService.getAll();
+  }
+
+  @Get('/category/:businessCategory')
+  getBycategory(@Param('businessCategory') businessCategory: Category) {
+    return this.businessService.getByCategory(businessCategory);
   }
 
   @Get('/:businessSlug')
